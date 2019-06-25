@@ -15,18 +15,18 @@ var command = process.argv[2];
 // What the user wants to search with the command, grabs everything typed after the command
 var search = process.argv.slice(3).join(" ");
 
-runLIRI();
+runLIRI(command, search);
 
 // Setting up the command structure
-function runLIRI() {
+function runLIRI(command, search) {
     if (command === "concert-this") {
-        concertInfo();
+        concertInfo(search);
     } else if (command === "spotify-this-song") {
-        songInfo();
+        songInfo(search);
     } else if (command === "movie-this") {
-        movieInfo();
+        movieInfo(search);
     } else if (command === "do-what-it-says") {
-        doWhatItSays();
+        doWhatItSays(search);
     } else {
         console.log("Command requested unknown to LIRI. Pick a proper LIRI command: ")
         console.log("concert-this");
@@ -36,17 +36,19 @@ function runLIRI() {
     };
 }
 
-function concertInfo() {
+function concertInfo(search) {
     var queryURL = "https://rest.bandsintown.com/artists/" + search + "/events?app_id=codingbootcamp";
 
     axios.get(queryURL).then(function(response) {
         var results = response.data;
-
+       
         if (results.length !== 0) {
             console.log("===============================")
             console.log("Upcoming events for '" + search + "'");
             for (var i = 0; i < results.length; i++) {
                 var concert = results[i];
+                console.log(concert);
+                console.log("===============================")
                 console.log("Venue: " + concert.venue.name + ",");
                 console.log("Location: " + concert.venue.city + ", " + concert.venue.region);
                 console.log("Date: " + moment(concert.datetime).format("MM/DD/YYYY"));
@@ -67,7 +69,7 @@ function concertInfo() {
     })
 }
 
-function songInfo() {
+function songInfo(search) {
     spotify.search({
         type: "track",
         query: search,
@@ -80,27 +82,26 @@ function songInfo() {
             console.log("RESULTS for '" + search + "'");
             for (var i = 0; i < results.length; i++) {
                 console.log("===============================");
-                console.log("Result #" + i);
                 console.log("Artist: " + results[i].artists[0].name);
                 console.log("Song Name: " + results[i].name);
-                console.log("Album: ") + results[i].album.name;
+                console.log("Album: " + results[i].album.name);
                 console.log("Preview Song: " + results[i].preview_url);
                 console.log("===============================");
             }
         } else {
-            console.log("Ace of Base, The Sign");
+            songInfo("The Sign");
         };
     })
 }
 
-function movieInfo() {
+function movieInfo(search) {
     var queryURL = "http://www.omdbapi.com/?t=" + search + "&y=&plot=full&tomatoes=true&apikey=trilogy";
-
+    
     axios.get(queryURL).then(function(response) {
         var results = response.data;
-
-        if (search === undefined) {
-            console.log("Mr. Nobody");
+        
+        if (results.Response === "False") {
+            movieInfo("Mr. Nobody");
         } else {
             console.log("===============================");
             console.log("Results for '" + search + "'");
@@ -108,7 +109,7 @@ function movieInfo() {
             console.log("Title: " + results.Title);
             console.log("Year: " + results.Year);
             console.log("IMDB Rating: " + results.imdbRating);
-            console.log("Rotten Tomatoes Rating: " + results.tomatoRating);
+            console.log("Rotten Tomatoes Rating: " + results.Ratings[1].Value);
             console.log("Country: " + results.Country);
             console.log("Language(s): " + results.Language);
             console.log("Plot: " + results.Plot);
@@ -116,7 +117,9 @@ function movieInfo() {
             console.log("===============================");
         }
         
-    });
+    }).catch(function(error) {
+        console.log(error);
+      });
 }
 
 function doWhatItSays() {
@@ -127,10 +130,10 @@ function doWhatItSays() {
 
         var dataSplit = data.split(",");
         console.log(dataSplit);
-        command = dataSplit[0];
-        search = dataSplit[1];
-
-        runLIRI();
+        command = dataSplit[0].trim();
+        search = dataSplit[1].trim().replace(/"|'/g, "");
+        
+        runLIRI(command, search);
 
         // To test run in random.txt file:
         // movie-this, "13 Going on 30"
@@ -139,5 +142,6 @@ function doWhatItSays() {
 
     })
 }
+
 
 
