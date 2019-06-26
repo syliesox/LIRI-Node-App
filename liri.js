@@ -41,13 +41,13 @@ function concertInfo(search) {
 
     axios.get(queryURL).then(function(response) {
         var results = response.data;
-       
-        if (results.length !== 0) {
+        if (results !== undefined) {
+            // console.log(results);
             console.log("===============================")
             console.log("Upcoming events for '" + search + "'");
             for (var i = 0; i < results.length; i++) {
                 var concert = results[i];
-                console.log(concert);
+                // console.log(concert);
                 console.log("===============================")
                 console.log("Venue: " + concert.venue.name + ",");
                 console.log("Location: " + concert.venue.city + ", " + concert.venue.region);
@@ -63,17 +63,17 @@ function concertInfo(search) {
                 }
                 console.log("===============================")
             };
-        } else {
-            console.log("No events found for " + search + ". Try again!")
-        }
-    })
+        } 
+    }).catch(function() {
+        console.log("No events found for '" + search + "'. Try again!")
+    });
 }
 
 function songInfo(search) {
     spotify.search({
         type: "track",
         query: search,
-        limit: 10
+        limit: 5
     }).then(function(response) {
         var results = response.tracks.items;
 
@@ -89,7 +89,7 @@ function songInfo(search) {
                 console.log("===============================");
             }
         } else {
-            songInfo("The Sign");
+            songInfo("The Sign, Ace of Base");
         };
     })
 }

@@ -1,6 +1,4 @@
 # LIRI NodeJS App
-A Node.js command line app that uses various APIs to search for information.
-
 
 ## Description 
 
@@ -28,7 +26,7 @@ LIRI App is a CLI (Command Line Interface) App built using NodeJS, and utilizes 
 - **do-what-it-says**
     Takes the text within the 'random.text' file, and uses it to call one of LIRI's commands
 
-[LIRI App walkthrough video](put video link here)
+[LIRI App walkthrough video](https://drive.google.com/open?id=1N44S0YhWbEW4ttGsdHA3-cIZZ32wtwQT)
 
 ## Link
  LIRI App is a CLI App, so there is no deployment to Github or Heroku.
